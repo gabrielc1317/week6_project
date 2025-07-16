@@ -7,6 +7,7 @@ function App() {
   const [currentCity, setCurrentCity] = useState("");
   const [currentWeather, setCurrentWeather] = useState(null);
   const [prevWeather, setPrevWeather] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentCity) return;
@@ -52,6 +53,9 @@ function App() {
       return ""; 
     }
   };
+  const filteredWeather = prevWeather.filter((weather) =>
+  weather.city.toLowerCase().includes(searchTerm.toLowerCase())
+);
   
   return (
     <div className='whole-page'>
@@ -85,21 +89,28 @@ function App() {
 <hr />
 
 <div className="previous-weather">
+<input
+  type="text"
+  placeholder="Search previous cities..."
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  style={{ marginBottom: "1rem", padding: "0.5rem" }}
+/>
   <h3>Previous Searches:</h3>
-  {prevWeather.length === 0 ? (
-    <p>No previous searches yet.</p>
-  ) : (
-    <ul>
-      {prevWeather.map((weather, index) => (
-        <li key={index}>
-          <strong>
-            {weather.city}, {weather.country}
-          </strong>{" "}
-          – {weather.tempF.toFixed(1)} °F, {weather.humidity}% humidity,{" "}
-          {weather.description} <em>({weather.date})</em>
-        </li>
-      ))}
-    </ul>
+  {filteredWeather.length === 0 ? (
+  <p>No matching results.</p>
+) : (
+  <ul>
+    {filteredWeather.map((weather, index) => (
+      <li key={index}>
+        <strong>
+          {weather.city}, {weather.country}
+        </strong>{" "}
+        – {weather.tempF.toFixed(1)} °F, {weather.humidity}% humidity,{" "}
+        {weather.description} <em>({weather.date})</em>
+      </li>
+    ))}
+  </ul>
   )}
 </div>
 
